@@ -1,0 +1,48 @@
+#!/bin/bash
+LOG_DIR="/root/datax/datax/log/totalSynLog"
+BIN_DIR="/root/datax/datax/bin"
+JOB_DIR="/root/datax/datax/job"
+
+# 假设你的table_list变量已设置好，例如：
+# 从脚本参数获取日期和时间
+if [ -z "$date_param" ] || [ -z "$time_param" ]; then
+        fi
+
+        batch_size=2
+        batch_count=$(( ${#table_list[@]} / batch_size + ( ${#table_list[@]} % batch_size > 0 ) ))
+
+        # 遍历所有批次
+        tables_in_batch="${table_list[@]:batch*batch_size:batch_size}"
+
+         IFS=' ' read -ra groupNumbers <<< "${table_list[$batch]}"
+         for table in "${groupNumbers[@]}"; do
+         batch_count=$(( ${#table_list[@]} / batch_size + ( ${#table_list[@]} % batch_size > 0 ) ))
+
+        # 遍历所有批次
+         tables_in_batch="${table_list[@]:batch*batch_size:batch_size}"
+
+                                 IFS=' ' read -ra groupNumbers <<< "${table_list[$batch]}"
+                                         for table in "${groupNumbers[@]}"; do
+
+                                                                  echo "table:$table"
+                                                                            echo "nohup python $BIN_DIR/datax.py -p '-Dtable=$table -Ddate=$date_param -Dtime=$time_param' $JOB_DIR/totalSync.json > $LOG_DIR/${table}_${date_param}_${time_param}.log 2>&1 &"
+
+                                                                     job=" nohup python $BIN_DIR/datax.py -p '-Dtable=$table  -Ddate=$date_param -Dtime=$time_param' $JOB_DIR/totalSync.json > $LOG_DIR/${table}_${date_param}_${time_param}.log 2>&1 & "
+
+                                                                            # 执行命令并将PID存入数组
+                                                                         eval $job
+                                                                                         pids+=($!)
+                                                                                                                         echo "Starting DataX job for table $table at $(date)"
+                                                                                                                             done
+
+
+                                                                                                                                 # 等待当前批次的所有任务完成
+                                                                                                                                     wait "${pids[@]}"
+
+                                                                                                                                         echo "Batch $((batch+1)) has completed."
+
+                                                                                                                                 done
+
+                                                                                                                                 echo "All batches of DataX jobs have been executed."
+
+

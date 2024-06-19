@@ -85,7 +85,7 @@ mybatis-plus:
 logging:
   #level:
   #  com.wugui.datax.admin.mapper: info
-#path: ./data/applogs/admin
+  #path: ./data/applogs/admin
   level:
     com.wugui.datax.admin.mapper: error
     path: ${data.path}/applogs/admin
